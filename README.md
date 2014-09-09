@@ -9,7 +9,7 @@ Fluend plugin for Dogstatsd, that is statsd server for Datadog.
 ## Usage
 
 ```
-$ echo '{"type": "increment", "key": "apache.requests", "tags": {"url", "/"}}' | fluent-cat dogstatsd.hello
+$ echo '{"type": "increment", "key": "apache.requests", "tags": {"url": "/"}}' | fluent-cat dogstatsd.hello
 $ echo '{"type": "histogram", "key": "apache.response_time", "value": 10.5, "tags": {"url": "/hello"}}' | fluent-cat dogstatsd.hello
 $ echo '{"type": "event", "title": "Deploy", "text": "New revision"}' | fluent-cat dogstatsd.hello
 ```
