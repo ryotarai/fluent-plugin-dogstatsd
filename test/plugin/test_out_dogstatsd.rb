@@ -67,6 +67,22 @@ class DogstatsdOutputTest < Test::Unit::TestCase
     ])
   end
 
+  def test_use_tag_as_key
+    d = create_driver(<<-EOC)
+#{default_config}
+use_tag_as_key true
+    EOC
+
+    d.instance.statsd = DummyStatsd.new
+
+    d.emit({'type' => 'increment'}, Time.now.to_i)
+    d.run
+
+    assert_equal(d.instance.statsd.messages, [
+      [:increment, 'dogstatsd.tag', {}],
+    ])
+  end
+
   private
   def default_config
     <<-EOC

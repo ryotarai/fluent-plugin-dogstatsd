@@ -4,6 +4,7 @@ module Fluent
 
     config_param :host, :string, :default => nil
     config_param :port, :integer, :default => nil
+    config_param :use_tag_as_key, :bool, :default => false
 
     unless method_defined?(:log)
       define_method(:log) { $log }
@@ -34,7 +35,12 @@ module Fluent
     def write(chunk)
       @statsd.batch do |s|
         chunk.msgpack_each do |tag, time, record|
-          key = record['key']
+          key = if @use_tag_as_key
+                  tag
+                else
+                  record['key']
+                end
+
           value = record['value']
 
           options = {}
