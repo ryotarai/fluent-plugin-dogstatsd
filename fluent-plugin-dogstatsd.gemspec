@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Ryota Arai"]
   spec.email         = ["ryota.arai@gmail.com"]
   spec.summary       = %q{Fluent plugin for Dogstatsd, that is statsd server for Datadog.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/ryotarai/fluent-plugin-dogstatsd"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
