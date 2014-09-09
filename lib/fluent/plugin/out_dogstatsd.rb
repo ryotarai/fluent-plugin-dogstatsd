@@ -41,6 +41,11 @@ module Fluent
                   record['key']
                 end
 
+          unless key
+            log.warn "'key' is not specified. skip this record:", tag: tag
+            next
+          end
+
           value = record['value']
 
           options = {}
