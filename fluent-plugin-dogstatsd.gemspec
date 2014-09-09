@@ -7,9 +7,8 @@ Gem::Specification.new do |spec|
   spec.name          = "fluent-plugin-dogstatsd"
   spec.version       = Fluent::Plugin::Dogstatsd::VERSION
   spec.authors       = ["Ryota Arai"]
-  spec.email         = ["ryota-arai@cookpad.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.email         = ["ryota.arai@gmail.com"]
+  spec.summary       = %q{Fluent plugin for Dogstatsd, that is statsd server for Datadog.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
