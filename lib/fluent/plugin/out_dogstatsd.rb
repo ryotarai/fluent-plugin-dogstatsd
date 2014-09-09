@@ -45,6 +45,12 @@ module Fluent
 
           options = {}
 
+          if record['tags']
+            options[:tags] = record['tags'].map do |k, v|
+              "#{k}:#{v}"
+            end
+          end
+
           case record['type']
           when 'increment'
             s.increment(key, options)

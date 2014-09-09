@@ -83,6 +83,17 @@ use_tag_as_key true
     ])
   end
 
+  def test_tags
+    d = create_driver
+    d.instance.statsd = DummyStatsd.new
+    d.emit({'type' => 'increment', 'key' => 'hello.world', 'tags' => {'key' => 'value'}}, Time.now.to_i)
+    d.run
+
+    assert_equal(d.instance.statsd.messages, [
+      [:increment, 'hello.world', {tags: ["key:value"]}],
+    ])
+  end
+
   private
   def default_config
     <<-EOC
