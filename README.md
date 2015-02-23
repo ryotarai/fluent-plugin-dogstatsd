@@ -30,6 +30,12 @@ Supported types are `increment`, `decrement`, `count`, `gauge`, `histogram`, `ti
 
   # Use tag of fluentd record as key sent to Dogstatsd
   use_tag_as_key false
+
+  # (Treat fields in a record as tags)
+  # flat_tag true
+
+  # (Metric type in Datadog.)
+  # metric_type increment
 </match>
 ```
 
