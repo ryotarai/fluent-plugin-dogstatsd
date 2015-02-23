@@ -16,7 +16,6 @@ module Fluent
       super
 
       require 'statsd' # dogstatsd-ruby
-      require 'fluent/plugin/dogstatsd/statsd_patch'
     end
 
     def start
