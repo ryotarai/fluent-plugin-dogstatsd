@@ -5,6 +5,8 @@ module Fluent
     config_param :host, :string, :default => nil
     config_param :port, :integer, :default => nil
     config_param :use_tag_as_key, :bool, :default => false
+    config_param :flat_tag, :bool, :default => false
+    config_param :metric_type, :string, :default => nil
 
     unless method_defined?(:log)
       define_method(:log) { $log }
@@ -37,7 +39,7 @@ module Fluent
           key = if @use_tag_as_key
                   tag
                 else
-                  record['key']
+                  record.delete('key')
                 end
 
           unless key
@@ -45,17 +47,27 @@ module Fluent
             next
           end
 
-          value = record['value']
+          value = record.delete('value')
 
           options = {}
 
-          if record['tags']
-            options[:tags] = record['tags'].map do |k, v|
+          tags = if @flat_tag
+                   record
+                 else
+                   record['tags']
+                 end
+
+          title = record.delete('title')
+          text  = record.delete('text')
+          type  = @metric_type || record.delete('type')
+
+          if tags
+            options[:tags] = tags.map do |k, v|
               "#{k}:#{v}"
             end
           end
 
-          case record['type']
+          case type
           when 'increment'
             s.increment(key, options)
           when 'decrement'
@@ -71,7 +83,11 @@ module Fluent
           when 'set'
             s.set(key, value, options)
           when 'event'
-            s.event(record['title'], record['text'], options)
+            s.event(title, text, options)
+          when nil
+            log.warn "type is not provided (You can provide type via `metric_type` in config or `type` field in a record."
+          else
+            log.warn "Type '#{type}' is unknown."
           end
         end
       end

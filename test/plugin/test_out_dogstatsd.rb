@@ -65,6 +65,34 @@ class DogstatsdOutputTest < Test::Unit::TestCase
     ])
   end
 
+  def test_flat_tag
+    d = create_driver(<<-EOC)
+#{default_config}
+flat_tag true
+    EOC
+
+    d.emit({'type' => 'increment', 'key' => 'hello.world', 'tagKey' => 'tagValue'}, Time.now.to_i)
+    d.run
+
+    assert_equal(d.instance.statsd.messages, [
+      [:increment, 'hello.world', {tags: ["tagKey:tagValue"]}],
+    ])
+  end
+
+  def test_metric_type
+    d = create_driver(<<-EOC)
+#{default_config}
+metric_type decrement
+    EOC
+
+    d.emit({'key' => 'hello.world', 'tags' => {'tagKey' => 'tagValue'}}, Time.now.to_i)
+    d.run
+
+    assert_equal(d.instance.statsd.messages, [
+      [:decrement, 'hello.world', {tags: ["tagKey:tagValue"]}],
+    ])
+  end
+
   def test_use_tag_as_key
     d = create_driver(<<-EOC)
 #{default_config}
