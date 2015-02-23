@@ -41,8 +41,6 @@ class DogstatsdOutputTest < Test::Unit::TestCase
   def test_write
     d = create_driver
 
-    d.instance.statsd = DummyStatsd.new
-
     d.emit({'type' => 'increment', 'key' => 'hello.world1'}, Time.now.to_i)
     d.emit({'type' => 'increment', 'key' => 'hello.world2'}, Time.now.to_i)
     d.emit({'type' => 'decrement', 'key' => 'hello.world'}, Time.now.to_i)
@@ -73,8 +71,6 @@ class DogstatsdOutputTest < Test::Unit::TestCase
 use_tag_as_key true
     EOC
 
-    d.instance.statsd = DummyStatsd.new
-
     d.emit({'type' => 'increment'}, Time.now.to_i)
     d.run
 
@@ -85,7 +81,6 @@ use_tag_as_key true
 
   def test_tags
     d = create_driver
-    d.instance.statsd = DummyStatsd.new
     d.emit({'type' => 'increment', 'key' => 'hello.world', 'tags' => {'key' => 'value'}}, Time.now.to_i)
     d.run
 
@@ -102,7 +97,9 @@ use_tag_as_key true
   end
 
   def create_driver(conf = default_config)
-    Fluent::Test::BufferedOutputTestDriver.new(Fluent::DogstatsdOutput, 'dogstatsd.tag').configure(conf)
+    Fluent::Test::BufferedOutputTestDriver.new(Fluent::DogstatsdOutput, 'dogstatsd.tag').configure(conf).tap do |d|
+      d.instance.statsd = DummyStatsd.new
+    end
   end
 end
 
