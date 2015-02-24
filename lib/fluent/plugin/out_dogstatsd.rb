@@ -7,6 +7,7 @@ module Fluent
     config_param :use_tag_as_key, :bool, :default => false
     config_param :flat_tags, :bool, :default => false
     config_param :metric_type, :string, :default => nil
+    config_param :value_key, :string, :default => nil
 
     unless method_defined?(:log)
       define_method(:log) { $log }
@@ -47,7 +48,7 @@ module Fluent
             next
           end
 
-          value = record.delete('value')
+          value = record.delete(@value_key || 'value')
 
           options = {}
 
