@@ -5,7 +5,7 @@ module Fluent
     config_param :host, :string, :default => nil
     config_param :port, :integer, :default => nil
     config_param :use_tag_as_key, :bool, :default => false
-    config_param :flat_tag, :bool, :default => false
+    config_param :flat_tags, :bool, :default => false
     config_param :metric_type, :string, :default => nil
 
     unless method_defined?(:log)
@@ -51,7 +51,7 @@ module Fluent
 
           options = {}
 
-          tags = if @flat_tag
+          tags = if @flat_tags
                    record
                  else
                    record['tags']
