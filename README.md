@@ -42,6 +42,62 @@ Supported types are `increment`, `decrement`, `count`, `gauge`, `histogram`, `ti
 </match>
 ```
 
+## Example
+
+### Count log lines
+
+```apache
+<source>
+  type tail
+  path /tmp/sample.log
+  tag datadog.increment.sample
+  format ...
+</source>
+
+<match datadog.increment.*>
+  type dogstatsd
+  metric_type increment
+  flat_tags true
+  use_tag_as_key true
+</match>
+```
+
+### Histogram
+
+```apache
+<source>
+  type tail
+  path /tmp/sample.log
+  tag datadog.histogram.sample
+  format /^(?<value>[^ ]*) (?<host>[^ ]*)$/
+</source>
+
+<match datadog.histogram.*>
+  type dogstatsd
+  metric_type histogram
+  flat_tags true
+  use_tag_as_key true
+</match>
+```
+
+### MySQL threads
+
+```apache
+<source>
+  type mysql_query
+  tag datadog.histogram.mysql_threads
+  query SHOW VARIABLES LIKE 'Thread_%'
+</source>
+
+<match datadog.histogram.mysql_threads>
+  type dogstatsd
+  metric_type histogram
+  value_key Value
+  flat_tags true
+  use_tag_as_key true
+</match>
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/ryotarai/fluent-plugin-dogstatsd/fork )
