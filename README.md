@@ -32,10 +32,13 @@ Supported types are `increment`, `decrement`, `count`, `gauge`, `histogram`, `ti
   use_tag_as_key false
 
   # (Treat fields in a record as tags)
-  # flat_tag true
+  # flat_tags true
 
   # (Metric type in Datadog.)
   # metric_type increment
+
+  # Default: "value"
+  # value_key Value
 </match>
 ```
 
