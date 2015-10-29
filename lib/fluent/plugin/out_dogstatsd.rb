@@ -6,6 +6,7 @@ module Fluent
     config_param :port, :integer, :default => nil
     config_param :use_tag_as_key, :bool, :default => false
     config_param :flat_tags, :bool, :default => false
+    config_param :flat_tag, :bool, :default => false # obsolute
     config_param :metric_type, :string, :default => nil
     config_param :value_key, :string, :default => nil
 
@@ -52,7 +53,7 @@ module Fluent
 
           options = {}
 
-          tags = if @flat_tags
+          tags = if @flat_tags || @flat_tag
                    record
                  else
                    record['tags']
@@ -95,4 +96,3 @@ module Fluent
     end
   end
 end
-
