@@ -107,6 +107,20 @@ use_tag_as_key true
     ])
   end
 
+  def test_use_tag_as_key_fallback
+    d = create_driver(<<-EOC)
+#{default_config}
+use_tag_as_key_if_missing true
+    EOC
+
+    d.emit({'type' => 'increment'}, Time.now.to_i)
+    d.run
+
+    assert_equal(d.instance.statsd.messages, [
+      [:increment, 'dogstatsd.tag', {}],
+    ])
+  end
+
   def test_tags
     d = create_driver
     d.emit({'type' => 'increment', 'key' => 'hello.world', 'tags' => {'key' => 'value'}}, Time.now.to_i)

@@ -5,6 +5,7 @@ module Fluent
     config_param :host, :string, :default => nil
     config_param :port, :integer, :default => nil
     config_param :use_tag_as_key, :bool, :default => false
+    config_param :use_tag_as_key_if_missing, :bool, :default => false
     config_param :flat_tags, :bool, :default => false
     config_param :flat_tag, :bool, :default => false # obsolete
     config_param :metric_type, :string, :default => nil
@@ -44,6 +45,10 @@ module Fluent
                 else
                   record.delete('key')
                 end
+
+          if !key && @use_tag_as_key_if_missing
+            key = tag
+          end
 
           unless key
             log.warn "'key' is not specified. skip this record:", tag: tag
