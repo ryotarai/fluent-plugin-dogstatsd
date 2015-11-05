@@ -6,9 +6,10 @@ module Fluent
     config_param :port, :integer, :default => nil
     config_param :use_tag_as_key, :bool, :default => false
     config_param :flat_tags, :bool, :default => false
-    config_param :flat_tag, :bool, :default => false # obsolute
+    config_param :flat_tag, :bool, :default => false # obsolete
     config_param :metric_type, :string, :default => nil
     config_param :value_key, :string, :default => nil
+    config_param :sample_rate, :float, :default => nil
 
     unless method_defined?(:log)
       define_method(:log) { $log }
@@ -52,17 +53,20 @@ module Fluent
           value = record.delete(@value_key || 'value')
 
           options = {}
+          title = record.delete('title')
+          text  = record.delete('text')
+          type  = @metric_type || record.delete('type')
+          sample_rate = @sample_rate || record.delete('sample_rate')
+
+          if sample_rate
+            options[:sample_rate] = sample_rate
+          end
 
           tags = if @flat_tags || @flat_tag
                    record
                  else
                    record['tags']
                  end
-
-          title = record.delete('title')
-          text  = record.delete('text')
-          type  = @metric_type || record.delete('type')
-
           if tags
             options[:tags] = tags.map do |k, v|
               "#{k}:#{v}"

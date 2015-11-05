@@ -117,6 +117,30 @@ use_tag_as_key true
     ])
   end
 
+  def test_sample_rate_config
+    d = create_driver(<<-EOC)
+#{default_config}
+sample_rate .5
+    EOC
+
+    d.emit({'type' => 'increment'}, Time.now.to_i)
+    d.run
+
+    assert_equal(d.instance.statsd.messages, [
+      [:increment, 'dogstatsd.tag', {sample_rate: 0.5}],
+    ])
+  end
+
+  def test_sample_rate
+    d = create_driver
+    d.emit({'type' => 'increment', 'sample_rate' => 0.5}, Time.now.to_i)
+    d.run
+
+    assert_equal(d.instance.statsd.messages, [
+      [:increment, 'dogstatsd.tag', {sample_rate: 0.5}],
+    ])
+  end
+
   private
   def default_config
     <<-EOC
