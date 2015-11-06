@@ -107,6 +107,20 @@ use_tag_as_key true
     ])
   end
 
+  def test_use_tag_as_key_fallback
+    d = create_driver(<<-EOC)
+#{default_config}
+use_tag_as_key_if_missing true
+    EOC
+
+    d.emit({'type' => 'increment'}, Time.now.to_i)
+    d.run
+
+    assert_equal(d.instance.statsd.messages, [
+      [:increment, 'dogstatsd.tag', {}],
+    ])
+  end
+
   def test_tags
     d = create_driver
     d.emit({'type' => 'increment', 'key' => 'hello.world', 'tags' => {'key' => 'value'}}, Time.now.to_i)
@@ -123,21 +137,21 @@ use_tag_as_key true
 sample_rate .5
     EOC
 
-    d.emit({'type' => 'increment'}, Time.now.to_i)
+    d.emit({'type' => 'increment', 'key' => 'tag'}, Time.now.to_i)
     d.run
 
     assert_equal(d.instance.statsd.messages, [
-      [:increment, 'dogstatsd.tag', {sample_rate: 0.5}],
+      [:increment, 'tag', {sample_rate: 0.5}],
     ])
   end
 
   def test_sample_rate
     d = create_driver
-    d.emit({'type' => 'increment', 'sample_rate' => 0.5}, Time.now.to_i)
+    d.emit({'type' => 'increment', 'sample_rate' => 0.5, 'key' => 'tag'}, Time.now.to_i)
     d.run
 
     assert_equal(d.instance.statsd.messages, [
-      [:increment, 'dogstatsd.tag', {sample_rate: 0.5}],
+      [:increment, 'tag', {sample_rate: 0.5}],
     ])
   end
 
