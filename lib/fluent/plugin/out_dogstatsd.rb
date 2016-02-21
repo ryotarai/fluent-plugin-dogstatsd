@@ -78,6 +78,11 @@ module Fluent
             end
           end
 
+          alert_type = record['alert_type']
+          if alert_type
+            options[:alert_type] = alert_type
+          end
+
           case type
           when 'increment'
             s.increment(key, options)
