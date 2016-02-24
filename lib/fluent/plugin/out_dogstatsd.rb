@@ -78,11 +78,6 @@ module Fluent
             end
           end
 
-          alert_type = record['alert_type']
-          if alert_type
-            options[:alert_type] = alert_type
-          end
-
           case type
           when 'increment'
             s.increment(key, options)
@@ -99,6 +94,7 @@ module Fluent
           when 'set'
             s.set(key, value, options)
           when 'event'
+            options[:alert_type] = record['alert_type']
             s.event(title, text, options)
           when nil
             log.warn "type is not provided (You can provide type via `metric_type` in config or `type` field in a record."
